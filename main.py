@@ -28,11 +28,12 @@ def loadMap(number): #load in the text file into the array LEVEL
     
 def draw(number): # trying to use blit to take the char array and change it to string
     file = "map-%s.txt" % number
+    col,row = 0,0
     with open(file, "r") as f:
         for line in f:
             for char in line:
                 screen_char = pygame.image.load(char_to_image[char])
-                screen.blit(char, (col, row))
+                WIN.blit(screen_char, (col, row))
                 col += 1
         row += 1
 
