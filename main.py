@@ -1,4 +1,4 @@
-import pygame
+import pygame,sys
  
 FPS = 60
 LEVEL = []
@@ -8,7 +8,9 @@ screen = pygame.display.set_mode((WIDTH,HEIGHT)) #window
 pygame.display.set_caption("Pac-Man")
  
 BLOCK_SIZE = 32
- 
+
+PMAN_START_X,PMAN_START_Y = 32,32*13
+
 char_to_image = {
     '.': 'dot.png',
     '=': 'wall.png',
@@ -18,12 +20,30 @@ char_to_image = {
 class Pacman(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
-        self.image = pygame.Surface([1,3])
-        self.image.fill("green")
+        self.is_animating = False
+        self.sprites = []
+        self.sprites.append(pygame.image.load('pacman_c.png'))
+        self.sprites.append(pygame.image.load('pacman_o.png'))
+        self.curr = 0
+        self.image = self.sprites[self.curr]
+
         self.rect = self.image.get_rect()
         self.rect.topleft = [x,y]
 
-        pygame.display.update()
+    def update(self):
+        
+        if self.is_animating == True:
+            self.curr += 0.05
+            if self.curr >= len(self.sprites):
+                self.curr = 0
+                self.is_animating = False
+            self.image = self.sprites[int(self.curr)]
+            
+
+    def animate(self):
+        self.is_animating = True
+
+
 
 
 def loadMap(number): #load in the text file into the array LEVEL 
@@ -60,7 +80,7 @@ def main():
     loadMap(1) # change the number to change the map
 
     moving_sprites = pygame.sprite.Group()
-    pacman = Pacman(1250,0)
+    pacman = Pacman(PMAN_START_X,PMAN_START_Y)
     moving_sprites.add(pacman)
 
 
@@ -72,9 +92,12 @@ def main():
             clock.tick(FPS)
             if event.type == pygame.QUIT:
                 play = False
+            if event.type == pygame.KEYDOWN:
+                pacman.animate()
         draw(1)
         moving_sprites.draw(screen)
-        
+        pacman.update()
+        pygame.display.flip()
     
     
     pygame.quit()
