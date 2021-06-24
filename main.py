@@ -3,7 +3,7 @@ import pygame
 FPS = 60
 LEVEL = []
 BACKGROUND_COLOR = ("black")
-WIDTH,HEIGHT = 900,500
+WIDTH,HEIGHT = 1250,490
 screen = pygame.display.set_mode((WIDTH,HEIGHT)) #window
 pygame.display.set_caption("Pac-Man")
  
@@ -15,6 +15,17 @@ char_to_image = {
     '*': 'power.png',
 }
  
+class Pacman(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        super().__init__()
+        self.image = pygame.Surface([1,3])
+        self.image.fill("green")
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [x,y]
+
+        pygame.display.update()
+
+
 def loadMap(number): #load in the text file into the array LEVEL 
     file = "map-%s.txt" % number
     with open(file) as f:
@@ -47,7 +58,13 @@ def draw(number): # trying to use blit to take the char array and change it to s
 def main():
  
     loadMap(1) # change the number to change the map
-   
+
+    moving_sprites = pygame.sprite.Group()
+    pacman = Pacman(1250,0)
+    moving_sprites.add(pacman)
+
+
+
     clock = pygame.time.Clock()
     play = True
     while play:
@@ -56,6 +73,7 @@ def main():
             if event.type == pygame.QUIT:
                 play = False
         draw(1)
+        moving_sprites.draw(screen)
         
     
     
