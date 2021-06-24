@@ -48,18 +48,19 @@ class Pacman(pygame.sprite.Sprite):
     def movement(self):
         key = pygame.key.get_pressed()
         if key[pygame.K_w]:
-            print("w")
             self.y -= 32
         elif key[pygame.K_s]:
-            print("s")
             self.y += 32
         elif key[pygame.K_a]:
-            print("a")
             self.x -= 32
         elif key[pygame.K_d]:
-            print("d")
+            
             self.x += 32
 
+        self.rect.topleft = (self.x, self.y)
+
+    def postion(self):
+        return self.x,self.y
 
 def loadMap(number): #load in the text file into the array LEVEL 
     file = "map-%s.txt" % number
@@ -89,9 +90,16 @@ def draw(number): # trying to use blit to take the char array and change it to s
         y += 32
  
     pygame.display.update()
- 
+
+
+def points(postion):
+    print(LEVEL[postion[0][postion[1]]])
+
+
 def main():
- 
+    
+
+
     loadMap(1) # change the number to change the map
     pman_X,pman_Y = 32,32*13
     moving_sprites = pygame.sprite.Group()
@@ -110,6 +118,9 @@ def main():
             if event.type == pygame.KEYDOWN:
                 pacman.movement()
                 pacman.animate()
+                points(pacman.postion())
+
+        screen.fill(0)
         
         draw(1)
         moving_sprites.draw(screen)
@@ -117,7 +128,9 @@ def main():
         pygame.display.flip()
         pygame.display.update()
     
-    
+        
+
+
     pygame.quit()
  
  
