@@ -9,7 +9,7 @@ pygame.display.set_caption("Pac-Man")
  
 BLOCK_SIZE = 32
 
-PMAN_START_X,PMAN_START_Y = 32,32*13
+
 
 char_to_image = {
     '.': 'dot.png',
@@ -19,6 +19,8 @@ char_to_image = {
  
 class Pacman(pygame.sprite.Sprite):
     def __init__(self,x,y):
+        self.x = x
+        self.y = y
         super().__init__()
         self.is_animating = False
         self.sprites = []
@@ -34,16 +36,29 @@ class Pacman(pygame.sprite.Sprite):
         
         if self.is_animating == True:
             self.curr += 0.05
-            if self.curr >= len(self.sprites):
-                self.curr = 0
+            if self.curr >= len(self.sprites):    
                 self.is_animating = False
+                self.curr = 0
             self.image = self.sprites[int(self.curr)]
             
 
     def animate(self):
         self.is_animating = True
 
-
+    def movement(self):
+        key = pygame.key.get_pressed()
+        if key[pygame.K_w]:
+            print("w")
+            self.y -= 32
+        elif key[pygame.K_s]:
+            print("s")
+            self.y += 32
+        elif key[pygame.K_a]:
+            print("a")
+            self.x -= 32
+        elif key[pygame.K_d]:
+            print("d")
+            self.x += 32
 
 
 def loadMap(number): #load in the text file into the array LEVEL 
@@ -78,26 +93,29 @@ def draw(number): # trying to use blit to take the char array and change it to s
 def main():
  
     loadMap(1) # change the number to change the map
-
+    pman_X,pman_Y = 32,32*13
     moving_sprites = pygame.sprite.Group()
-    pacman = Pacman(PMAN_START_X,PMAN_START_Y)
+    pacman = Pacman(pman_X,pman_Y)
     moving_sprites.add(pacman)
-
-
-
+    
+    
     clock = pygame.time.Clock()
     play = True
+
     while play:
         for event in pygame.event.get():
             clock.tick(FPS)
             if event.type == pygame.QUIT:
                 play = False
             if event.type == pygame.KEYDOWN:
+                pacman.movement()
                 pacman.animate()
+        
         draw(1)
         moving_sprites.draw(screen)
-        pacman.update()
+        moving_sprites.update()
         pygame.display.flip()
+        pygame.display.update()
     
     
     pygame.quit()
